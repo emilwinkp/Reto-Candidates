@@ -3,7 +3,7 @@
 // Constructor de la clase
 Motores::Motores(uint8_t speed1, uint8_t in1_1, uint8_t in2_1,
                  uint8_t speed2, uint8_t in1_2, uint8_t in2_2)
-  : motor1(speed1, in1_1, in2_2), motor2(speed2, in1_2, in2_2),
+  : motor1(speed1, in1_1, in2_1), motor2(speed2, in1_2, in2_2),
     kp(1.0), ki(0.0), kd(0.0), eprev(0.0), eintegral(0.0), prevT(0), pos1(0),pos2(0),
     encoderPinA1(encoderPinA1), encoderPinB1(encoderPinB1),
     encoderPinA2(encoderPinA2), encoderPinB1(encoderPinB2),
@@ -14,6 +14,7 @@ Motores::Motores(uint8_t speed1, uint8_t in1_1, uint8_t in2_1,
   pinMode(encoderPinB1, INPUT);
   pinMode(encoderPinA2, INPUT);
   pinMode(encoderPinB2, INPUT);
+  pinMode(pwm, OUTPUT);
 
   // Configuración de interrupción para el encoder
   attachInterrupt(digitalPinToInterrupt(encoderPinA), std::bind(&Motores::readEncoder, this), RISING); // checar si es necesario
@@ -37,7 +38,7 @@ void Motores::readEncoder() {
 // Función para leer el encoder 2
   int a2 = digitalRead(encoderPinA2);
   int b2 = digitalRead(encoderPinB2);
-  if (a != b) {
+  if (a2 != b2) {
     pos2++;
   }  else {
     pos2--; 
@@ -56,7 +57,7 @@ void Motores::ControlWithPID(int target_position1, int target_position2) {
   int error1 = target_position1 - pos1;
 
   // Derivada para motor 1
-  float dedt1 = (error1 - eprev) / deltaT;
+  float dedt1 = (error1 - eprev1) / deltaT;
 
   // Integral para motor 1
   eintegral1 += error1 * deltaT;
@@ -125,23 +126,28 @@ void Motores::SetAllSpeeds(uint8_t speed){
 void MoveMotorsImu(float target_angle){
   float angulo_inicial = readAnguloInicial();
   float angulo_actual = angulo_inicial;
-
-  if (target_angle >0){
-    //Giro a la derecha
-    motor1.SetSpeed(200);
-    motor1.MoveForward();
-    motor2.SetSpeed(200);
-    motor2.MoveBackwards();
-  } else {
-    motor1.SetSpeed(200);
-    motor1.MoveBackwards();
-    motor2.SetSpeed(200);
-    motor2.MoveForward();
-  }
+  float error;
+  
   // Girar hasta alcanzar algulo deseado
   while abs((angulo_actual - angulo_inicial)< target_angle){
-    angulo_actual = readAnguloActual();
+    angulo_actual = readAnguloActual(); 
+    error = target_angle - (angulo_actual - angulo_inicial)
+
+    float velocidad = kp * error; 
+    if (target_angle >0){
+    //Giro a la derecha
+      motor1.SetSpeed(velocidad);
+      motor1.MoveForward();
+      motor2.SetSpeed(velocidad);
+      motor2.MoveBackwards();
+    } else {
+      motor1.SetSpeed(velocidad);
+      motor1.MoveBackwards();
+      motor2.SetSpeed(velocidad);
+      motor2.MoveForward();
+    }
   }
+  
   StopMotors();
 }
 

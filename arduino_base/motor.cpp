@@ -7,26 +7,30 @@ void Motor::InitializeMotor();
   pinMode(in2_, OUTPUT);
   digitalWrite(in1_,LOW)
   digitalWrite(in2_,LOW);
-  analogWrite(speed,0);
+  analogWrite(speedPin,0);
 }
-void Motor::SetSpeed(uint8_t pwm, uint8_t speed)
+void Motor::SetSpeed(uint8_t pwmPin, uint8_t speed)
 {
-  analogWrite(pwm, speed);
+  analogWrite(pwmPin, speed);
+  vel = speed;
 };
 
 void Motor::MoveForward()
 {
   digitalWrite(in1_, HIGH);
   digitalWrite(in2_, LOW);
+  analogWrite(speedPin_,vel)
 };
 
-void Motor::MoveBawkards()
+void Motor::MoveBackwards()
 {
   digitalWrite(in1_, LOW);
   digitalWrite(in2_, HIGH);
+  analogWrite(speedPin_,vel)
 
-void Motor::StopMotor(){
+void Motor::StopMotor()
+{
   digitalWrite(in1_, LOW);
-  digitalWrite(in1_, LOW);
+  digitalWrite(in2_, LOW);
 }
 };

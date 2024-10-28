@@ -8,7 +8,7 @@ class Ultrasonico
   public:
   Ultrasonico(uint8_t trigger, uint8_t echo);
   void InitializeUltra();
-  void medirDistancia();
+  void MedirDistancia();
 
 private:
   uint8_t trigger_;
