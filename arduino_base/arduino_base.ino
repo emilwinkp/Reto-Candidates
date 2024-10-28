@@ -19,20 +19,21 @@ float target_angle;
 Motores myMotors()
 
 void setup() {
-  Serial.begin(9600);           // Comunicación con el ordenador
-  espSerial.begin(9600);        // Comunicación con el ESP32
+  Serial.begin(115200);           // Comunicación con el ordenador
+  espSerial.begin(115200);        // Comunicación con el ESP32
   
   // put your setup code here, to run once:
 
 }
 
 void loop() {
+ void 
  if (espSerial.available()) {
     float targetAngle = espSerial.parseFloat();  // Leer ángulo enviado por ESP32
     Serial.println(targetAngle)
  }
 
- 
+
   /*
   unsigned long currentMillies = millies();
   if ((currentMillies - previousMillis) >= intervalo)

@@ -8,7 +8,7 @@ Ultrasonico::Ultrasonico(uint8_t triggerPin_1, uint8_t echoPin_1,
   : ultrasonico1(triggerPin_1,echoPin_1), ultrasonico2(triggerPin_2, echoPin_2), ultrasonico3(triggerPin_3, echoPin_3),
   muroCercaDist(muroCercaDist), muroLejosDist(muroLejosDist), pelotaDist(pelota distancia)
   muro_cercaIzq(false), muro_cercaDer(false), muro_cercaEnf(false), 
-  pelotaIzq(false), pelotaDer(false) muro_lejos(0) {}
+  pelotaIzq(false), pelotaDer(false), pelotaEnf(false), muro_lejos(0) {}
 
 // Inicializa los pines del sensor
 void Ultrasonico::InitializeUltra() {
@@ -51,6 +51,8 @@ void Ultrasonicos::evaluarMuro() {
   float distancia2 = MedirDistancia(triggerPin_2, echoPin_2);
   if (distancia2 <= muroCercaDist) {
     muro_cercaEnf = true;
+  } else if (distancia2 > muroCercaDist && distancia2 <= pelotaDist) {
+    pelotaEnf = true;
   } else { 
     muro lejos++;
   }
@@ -64,6 +66,24 @@ void Ultrasonicos::evaluarMuro() {
     muro_lejos++;
   }
 
+void evaluarSituacion() {
+  ultrasonico.evaluarMuro(); // Llama a la función para actualizar los estados de los sensores
+  if (muro_cercaIzq && muro_cercaEnf && !muro_cercaDer) {
+    situacion = 1;
+  } else if (muro_cercaIzq && !muro_cercaEnf && muro_cercaDer) {
+    situacion = 2;
+  } else if (!muro_cercaIzq && muro_cercaEnf && muro_cercaDer) {
+    situacion = 3;
+  } else if (!muro_cercaIzq && pelotaEnf && !muro_cercaDer) {
+    situacion = 4;
+  } else if (muro_cercaIzq && !muro_cercaEnf && pelotaDer) {
+    situacion = 5;
+  } else if (pelotaIzq && !muro_cercaEnf && muro_cercaDer) {
+    situacion = 6;
+  } else {
+    situacion = 0; // Si ninguna situación coincide, puedes definir una situación por defecto.
+  }
+  
   /*
   // Imprimir los resultados
   Serial.print("Distancia: ");

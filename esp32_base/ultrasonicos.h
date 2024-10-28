@@ -9,7 +9,7 @@ public:
   Ultrasonico(uint8_t triggerPin_1, uint8_t echoPin_2,
               uint8_t triggerPin_2, uint8_t echoPin_2,
               uint8_t triggerPin_3, uint8_t echoPin_3,  
-              int muroCercaDist = 10, int muroLejosDist = 45, float pelotaDist = 22.25); // Checar distancias
+              int muroCercaDist, int muroLejosDist, float pelotaDist); // Checar distancias
 
   // Inicializa los pines del sensor
   void InitializeUltra();
@@ -17,6 +17,8 @@ public:
   float medirDistancia();
   // Evaluar si hay un muro cerca o lejos
   void evaluarMuros();
+  // Evaluar situacion
+  void evaluarSituacion();
   // Obtener el conteo de muros cercanos y lejanos
   int getMuroCerca() { return muro_cerca; }
   int getMuroLejos() { return muro_lejos; }

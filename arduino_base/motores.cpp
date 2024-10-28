@@ -4,7 +4,8 @@
 Motores::Motores(uint8_t speed1, uint8_t in1_1, uint8_t in2_1,
                  uint8_t speed2, uint8_t in1_2, uint8_t in2_2)
   : motor1(speed1, in1_1, in2_1), motor2(speed2, in1_2, in2_2),
-    kp(1.0), ki(0.0), kd(0.0), eprev(0.0), eintegral(0.0), prevT(0), pos1(0),pos2(0),
+    kp(1.0), ki(0.0), kd(0.0), eprev1(0.0), eprev2(0.0), 
+    eintegral1(0.0), eintegral2(0.0) prevT(0), pos1(0),pos2(0),
     encoderPinA1(encoderPinA1), encoderPinB1(encoderPinB1),
     encoderPinA2(encoderPinA2), encoderPinB1(encoderPinB2),
     pwm(pwm_salida)  // Pines del encoder (modifica según sea necesario)
@@ -113,7 +114,7 @@ void Motores::StopMotors(){
 
 void Motores::InitializeDriver(){
   InitializeMotors();
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(pwm, OUTPUT);
 }
 

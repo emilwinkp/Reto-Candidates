@@ -1,36 +1,31 @@
-#include "motor.h"
+#include "Motor.h"
 #include <Arduino.h>
 
-void Motor::InitializeMotor();
-{
-  pinMode(in1_, OUTPUT);
-  pinMode(in2_, OUTPUT);
-  digitalWrite(in1_,LOW)
-  digitalWrite(in2_,LOW);
-  analogWrite(speedPin,0);
+// Constructor que inicializa la instancia de PuenteH
+Motor::Motor(uint8_t speedPin, uint8_t in1Pin, uint8_t in2Pin) 
+    : bridge(speedPin, in1Pin, in2Pin) {}
+
+// Inicializa el motor usando PuenteH
+void Motor::InitializeMotor() {
+    bridge.initializeBridge();
 }
-void Motor::SetSpeed(uint8_t pwmPin, uint8_t speed)
-{
-  analogWrite(pwmPin, speed);
-  vel = speed;
-};
 
-void Motor::MoveForward()
-{
-  digitalWrite(in1_, HIGH);
-  digitalWrite(in2_, LOW);
-  analogWrite(speedPin_,vel)
-};
-
-void Motor::MoveBackwards()
-{
-  digitalWrite(in1_, LOW);
-  digitalWrite(in2_, HIGH);
-  analogWrite(speedPin_,vel)
-
-void Motor::StopMotor()
-{
-  digitalWrite(in1_, LOW);
-  digitalWrite(in2_, LOW);
+// Establece la velocidad usando PuenteH
+void Motor::setSpeed(uint8_t speed) {
+    bridge.setSpeed(speed);
 }
-};
+
+// Mueve el motor hacia adelante usando PuenteH
+void Motor::moveForward() {
+    bridge.moveForward();
+}
+
+// Mueve el motor hacia atrás usando PuenteH
+void Motor::moveBackward() {
+    bridge.moveBackward();
+}
+
+// Detiene el motor usando PuenteH
+void Motor::stopMotor() {
+    bridge.stopMotor();
+}
