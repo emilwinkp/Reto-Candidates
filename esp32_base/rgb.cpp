@@ -34,21 +34,19 @@ void ColorSensor::readColor() {
 }
 
 String ColorSensor::getColorName() const {
-    if (hue < 15) {
-        return "Red";
-    } else if (hue < 45) {
-        return "Orange";
-    } else if (hue < 90) {
-        return "Yellow";
-    } else if (hue < 150) {
-        return "Green";
-    } else if (hue < 210) {
-        return "Cyan";
-    } else if (hue < 270) {
-        return "Blue";
-    } else if (hue < 330) {
-        return "Magenta";
+    if (value < 50 && saturation < 50) {
+        return "Black";  // Negro, con bajo valor y saturación
+    } else if (hue < 15 || hue >= 330) {
+        return "Red";    // Rojo
+    } else if (hue >= 45 && hue < 75) {
+        return "Yellow"; // Amarillo
+    } else if (hue >= 75 && hue < 150) {
+        return "Green";  // Verde
+    } else if (hue >= 270 && hue < 330) {
+        return "Magenta"; // Magenta
+    } else if (hue >= 240 && hue < 270) {
+        return "Purple"; // Púrpura
     } else {
-        return "Red";
+        return "Unknown"; // Colores no especificados
     }
 }
