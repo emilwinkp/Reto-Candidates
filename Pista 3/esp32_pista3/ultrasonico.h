@@ -5,13 +5,13 @@
 
 class Ultrasonico 
 {
-  public:
+public:
   Ultrasonico(uint8_t trigger, uint8_t echo);
   void InitializeUltra();
-  void MedirDistancia();
+  float MedirDistancia();
 
 private:
   uint8_t trigger_;
   uint8_t echo_;
-
+};
 #endif
