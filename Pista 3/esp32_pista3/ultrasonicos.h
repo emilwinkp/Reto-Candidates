@@ -6,7 +6,7 @@
 class Ultrasonicos {
 public:
   // Constructor
-  Ultrasonico(uint8_t triggerPin_1, uint8_t echoPin_2,
+  Ultrasonicos(uint8_t triggerPin_1, uint8_t echoPin_2,
               uint8_t triggerPin_2, uint8_t echoPin_2,
               uint8_t triggerPin_3, uint8_t echoPin_3,  
               int muroCercaDist, int muroLejosDist, float pelotaDist); // Checar distancias
@@ -14,7 +14,7 @@ public:
   // Inicializa los pines del sensor
   void InitializeUltra();
   // Medir distancia
-  float medirDistancia();
+  float medirDistancia(uint8_t trigger, uint8_t echo);
   // Evaluar si hay un muro cerca o lejos
   void evaluarMuros();
   // Evaluar situacion
@@ -24,9 +24,9 @@ public:
   int getMuroLejos() { return muro_lejos; }
 
 private:
-  Ultrasonico ultrasonico1
-  Ultrasonico ultrasonico2
-  Ultrasonico ultrasonico3
+  Ultrasonico ultrasonico1;
+  Ultrasonico ultrasonico2;
+  Ultrasonico ultrasonico3;
   int muroCercaDist;
   int muroLejosDist;
   int muro_cerca;
