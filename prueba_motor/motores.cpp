@@ -12,7 +12,7 @@ Motores::Motores(uint8_t speed1, uint8_t in1_1, uint8_t in2_1,
   pos1(0), pos2(0), encoderPinA1(10), encoderPinB1(8), encoderPinA2(12), encoderPinB2(11){
   instance = this;
 }
-    //pwm(pwm_salida) // Pines del encoder (modifica según sea necesario)
+  //pwm(pwm_salida) // Pines del encoder (modifica según sea necesario)
 void Motores::InitializeEncoders() {
   // Configuración de pines para el encoder
   pinMode(encoderPinA1, INPUT);
@@ -32,13 +32,23 @@ void Motores::InitializeEncoders() {
 void Motores::InitializeMotors() {
   motor1.InitializeMotor();
   motor2.InitializeMotor();
+  resetEncoder();
+}
+
+void Motores::readEncoder() {
+  readEncoderA1();
+  readEncoderA2();
+}
+
+void Motores::resetEncoder(){
+  pos1 = 0;
+  pos2 = 0;
 }
 
 void Motores::readEncoderA1() {
   if (instance) {
     bool a = digitalRead(instance->encoderPinA1);
     bool b = digitalRead(instance->encoderPinB1);
-
     // Dirección del encoder 1
     if (a != b) {
       instance->pos1++;
@@ -53,7 +63,6 @@ void Motores::readEncoderA2() {
   if (instance) {
     bool a = digitalRead(instance->encoderPinA2);
     bool b = digitalRead(instance->encoderPinB2);
-
     // Dirección del encoder 2
     if (a != b) {
       instance->pos2++;
@@ -63,6 +72,10 @@ void Motores::readEncoderA2() {
   }
 }
 
+void Motores::SpeedMotores(uint8_t speed1, uint8_t speed2){
+  motor1.SetSpeed(speed1);
+  motor2.SetSpeed(speed2);
+}
 // Función de control PID
 void Motores::ControlWithPID(int target_position1, int target_position2) {
   // Calcular el tiempo transcurrido
@@ -167,22 +180,19 @@ void Motores::MoveMotorsImu(float target_angle){
     eprev = error;
 
     control_signal = kp * error + ki * eintegral + kd * dedt;
-
-    if (control_signal > 255) control_signal = 255;
-    if (control_signal > -255) control_signal = -255;
-
     float velocidad = fabs(control_signal);
-
+    if (velocidad > 255) velocidad = 255;
+  
     if (target_angle> 0){
     //Giro a la derecha
-      motor1.SetSpeed(control_signal);
+      motor1.SetSpeed(velocidad);
       motor1.MoveForward();
-      motor2.SetSpeed(control_signal);
+      motor2.SetSpeed(velocidad);
       motor2.MoveBackwards();
     } else {
-      motor1.SetSpeed(control_signal);
+      motor1.SetSpeed(velocidad);
       motor1.MoveBackwards();
-      motor2.SetSpeed(control_signal);
+      motor2.SetSpeed(velocidad);
       motor2.MoveForward();
     }
 

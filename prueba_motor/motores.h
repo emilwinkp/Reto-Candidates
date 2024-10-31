@@ -23,10 +23,12 @@ public:
   // PID con encoder
   void ControlWithPID(int target_position1, int target_position2);
   static void readEncoder();  // Función para leer el encoder
+  void resetEncoder();
   static void readEncoderA1();
   static void readEncoderA2();
   // IMU para giros 
   void MoveMotorsImu (float target_angle); //Checar comunicacion con esp32
+  void SpeedMotores(uint8_t speed1, uint8_t speed2);
   
 private:
   Motor motor1;

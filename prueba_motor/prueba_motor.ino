@@ -1,6 +1,6 @@
 #include "motores.h"
 
-Motores mismotores(6,2,3,5,4,7);
+Motores mismotores(6,3,2,5,4,7);
 
 void setup() {
   Serial.begin(9600);
@@ -11,7 +11,6 @@ void setup() {
 
 void loop() {
   mismotores.SetAllSpeeds(100);
-  mismotores.MotoresMoveForward();
-  // put your main code here, to run repeatedly:
+  mismotores.MotoresMoveForward();// put your main code here, to run repeatedly:
 
 ;}
