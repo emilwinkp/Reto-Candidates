@@ -6,18 +6,15 @@ Ultrasonicos::Ultrasonico(uint8_t triggerPin_1, uint8_t echoPin_1,
                          uint8_t triggerPin_3, uint8_t echoPin_3,
                          int muroCercaDist, int muroLejosDist, float pelotaDist)
   : ultrasonico1(triggerPin_1,echoPin_1), ultrasonico2(triggerPin_2, echoPin_2), ultrasonico3(triggerPin_3, echoPin_3),
-  muroCercaDist(muroCercaDist), muroLejosDist(muroLejosDist), pelotaDist(pelotaDist)
+  muroCercaDist(muroCercaDist), muroLejosDist(muroLejosDist), pelotaDist(pelotaDist),
   muro_cercaIzq(false), muro_cercaDer(false), muro_cercaEnf(false), 
-  pelotaIzq(false), pelotaDer(false), pelotaEnf(false), muro_lejos(0) {}
+  pelotaIzq(false), pelotaDer(false), pelotaEnf(false), muro_lejos(0), situacion(0) {}
 
 // Inicializa los pines del sensor
 void Ultrasonicos::InitializeUltra() {
-  pinMode(triggerPin_1, OUTPUT);
-  pinMode(echoPin_1, INPUT);
-  pinMode(triggerPin_2, OUTPUT);
-  pinMode(echoPin_2, INPUT);
-  pinMode(triggerPin_3, OUTPUT);
-  pinMode(echoPin_3, INPUT);
+  ultrasonico1.InitializeUltra();
+  ultrasonico2.InitializeUltra();
+  ultrasonico3.InitializeUltra();
 }
 
 // Medir distancia con el sensor ultrasónico
@@ -54,7 +51,7 @@ void Ultrasonicos::evaluarMuro() {
   } else if (distancia2 > muroCercaDist && distancia2 <= pelotaDist) {
     pelotaEnf = true;
   } else { 
-    muro lejos++;
+    muro_lejos++;
   }
 
   float distancia3 = MedirDistancia(triggerPin_3, echoPin_3);
@@ -85,7 +82,7 @@ void evaluarSituacion() {
   } else if (muro_cercaIzq && !muro_cercaEnf && !muro_cercaDer) {
     situacion = 8; //Muro izquierda y espacio a la derecha
   } else if (!muro_cercaIzq && !muro_cercaEnf && muro_cercaDer) {
-    situacion = 8; //Muro derecha y espacio a la izquierda
+    situacion = 9; //Muro derecha y espacio a la izquierda
   } else {
     situacion = 0; // Si ninguna situación coincide, puedes definir una situación por defecto.
   }
