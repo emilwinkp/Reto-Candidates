@@ -1,7 +1,5 @@
 #ifndef ULTRASONICO_H
 #define ULTRASONICO_H
-
-#include <esp_arduino_version.h>
 #include <Arduino.h>
 
 class Ultrasonico 

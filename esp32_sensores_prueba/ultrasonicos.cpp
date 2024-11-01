@@ -52,7 +52,7 @@ void Ultrasonicos::evaluarMuros() {
   // Medir y evaluar para el sensor izquierdo
   float distancia1 = ultrasonico1.medirDistancia();
   Serial.print("distancia1: ");
-  Serial.println(distancia1);
+  Serial.print(distancia1);
   if (distancia1 != -1) { // Verificar que la distancia sea válida
     if (distancia1 <= muroCercaDist) {
       muro_cercaIzq = true;
@@ -120,6 +120,8 @@ int Ultrasonicos::evaluarSituacion() {
   else {
     situacion = 12; // Si ninguna situación coincide, puedes definir una situación por defecto.
   }
+  //Serial.print("Situacion: ");
+  //Serial.println(situacion);
   return situacion;
 }
 

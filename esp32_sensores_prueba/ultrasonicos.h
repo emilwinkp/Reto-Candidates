@@ -38,7 +38,7 @@ private:
   int muro_lejos;
   int situacion;
   void enviarComando(int comando);
-
+  uint8_t triggerPin_1, echoPin_1, triggerPin_2, echoPin_2, triggerPin_3, echoPin_3;
   HardwareSerial Serial2 = HardwareSerial(2); //Puerto serial adicional para comunicación
 };
 
