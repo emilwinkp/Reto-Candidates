@@ -3,64 +3,92 @@
 Ultrasonicos::Ultrasonicos(uint8_t triggerPin_1, uint8_t echoPin_1,
                          uint8_t triggerPin_2, uint8_t echoPin_2,
                          uint8_t triggerPin_3, uint8_t echoPin_3,
-                         int muroCercaDist, int muroLejosDist, float pelotaDist)
+                         float muroCercaDist, float muroLejosDist, float pelotaDist)
   : ultrasonico1(triggerPin_1, echoPin_1), ultrasonico2(triggerPin_2, echoPin_2), ultrasonico3(triggerPin_3, echoPin_3),
   muroCercaDist(muroCercaDist), muroLejosDist(muroLejosDist), pelotaDist(pelotaDist),
   muro_cercaIzq(false), muro_cercaDer(false), muro_cercaEnf(false), 
-  pelotaIzq(false), pelotaDer(false), pelotaEnf(false), muro_lejos(0), situacion(0) {}
+  pelotaIzq(false), pelotaDer(false), pelotaEnf(false), muro_lejos(0), situacion(0){}
 
 // Inicializa los pines del sensor
 void Ultrasonicos::InitializeUltras() {
   ultrasonico1.InitializeUltra();
   ultrasonico2.InitializeUltra();
   ultrasonico3.InitializeUltra();
-  Serial2.begin(9600, SERIAL_8N1, 1, 3);
+  //Serial2.begin(115200, SERIAL_8N1, 1, 3);
 }
 
 // Medir distancia con el sensor ultrasónico
-float Ultrasonicos::medirDistancia(uint8_t trigger, uint8_t echo) {
+float Ultrasonicos::medirDistancias(uint8_t trigger, uint8_t echo) {
   // Enviar pulso de trigger
   digitalWrite(trigger, LOW);
   delayMicroseconds(2);
   digitalWrite(trigger, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigger, LOW);
-  
+
   // Leer el tiempo de respuesta del pulso en microsegundos
   long duration = pulseIn(echo, HIGH);
-  
+
+  // Verificar si `pulseIn` detectó un valor válido
+  if (duration == 0) {
+    Serial.println("Error: No se recibió señal de eco.");
+    return -1; // Valor que indica error en la lectura
+  }
+
   // Calcular distancia en cm (velocidad del sonido = 340 m/s => 58.2 us/cm)
   float distance = duration / 58.2;
+  Serial.print("Distancia medida: ");
+  Serial.println(distance);
   return distance;
 }
 
 // Evaluar si hay un muro cerca o lejos
 void Ultrasonicos::evaluarMuros() {
-  float distancia1 = ultrasonico1.MedirDistancia(); 
-  if (distancia1 <= muroCercaDist) {
-    muro_cercaIzq = true;
-  } else if (distancia1 >= muroCercaDist && distancia1 <= pelotaDist) {
-    pelotaIzq = true;
-  } else {
-    muro_lejos++;
+  // Reiniciar variables de estado
+  muro_cercaIzq = muro_cercaDer = muro_cercaEnf = false;
+  pelotaIzq = pelotaDer = pelotaEnf = false;
+  muro_lejos = 0;
+
+  // Medir y evaluar para el sensor izquierdo
+  float distancia1 = ultrasonico1.medirDistancia();
+  Serial.print("distancia1: ");
+  Serial.println(distancia1);
+  if (distancia1 != -1) { // Verificar que la distancia sea válida
+    if (distancia1 <= muroCercaDist) {
+      muro_cercaIzq = true;
+    } else if (distancia1 > muroCercaDist && distancia1 <= pelotaDist) {
+      pelotaIzq = true;
+    } else {
+      muro_lejos++;
+    }
   }
 
-  float distancia2 = ultrasonico2.MedirDistancia();
-  if (distancia2 <= muroCercaDist) {
-    muro_cercaEnf = true;
-  } else if (distancia2 > muroCercaDist && distancia2 <= pelotaDist) {
-    pelotaEnf = true;
-  } else { 
-    muro_lejos++;
+  // Medir y evaluar para el sensor central
+  float distancia2 = ultrasonico2.medirDistancia();
+  Serial.print("distancia2: ");
+  Serial.println(distancia2);
+  if (distancia2 != -1) {
+    if (distancia2 <= muroCercaDist) {
+      muro_cercaEnf = true;
+    } else if (distancia2 > muroCercaDist && distancia2 <= pelotaDist) {
+      pelotaEnf = true;
+    } else {
+      muro_lejos++;
+    }
   }
 
-  float distancia3 = ultrasonico3.MedirDistancia();
-  if (distancia3 <= muroCercaDist) {
-    muro_cercaDer = true;
-  } else if (distancia3 >= muroCercaDist && distancia3 <= pelotaDist) {
-    pelotaDer = true;
-  } else {
-    muro_lejos++;
+  // Medir y evaluar para el sensor derecho
+  float distancia3 = ultrasonico3.medirDistancia();
+  Serial.print("distancia3: ");
+  Serial.println(distancia3);
+  if (distancia3 != -1) {
+    if (distancia3 <= muroCercaDist) {
+      muro_cercaDer = true;
+    } else if (distancia3 > muroCercaDist && distancia3 <= pelotaDist) {
+      pelotaDer = true;
+    } else {
+      muro_lejos++;
+    }
   }
 }
 

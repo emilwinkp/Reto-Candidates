@@ -1,24 +1,24 @@
 #include "ultrasonico.h"
 
-void Ultrasonico::InitializeUltra(){
-  Serial.begin(9600);
+Ultrasonico::Ultrasonico(uint8_t trigger, uint8_t echo) 
+  : trigger_(trigger), echo_(echo) {}
+
+void Ultrasonico::InitializeUltra() {
+  Serial.begin(115200);
   pinMode(trigger_, OUTPUT);
   pinMode(echo_, INPUT);
 }
 
-float Ultrasonico::MedirDistancia(){
-    // Enviar pulso de trigger
+float Ultrasonico::medirDistancia() {
   digitalWrite(trigger_, LOW);
   delayMicroseconds(2);
   digitalWrite(trigger_, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigger_, LOW);
-  
-  // Leer el tiempo de respuesta del pulso en microsegundos
+
   long duration = pulseIn(echo_, HIGH);
-  
-  // Calcular distancia en cm (velocidad del sonido = 340 m/s => 58.2 us/cm)
   float distance = duration / 58.2;
+  Serial.print("Distancia: ");
+  Serial.print(distance);
   return distance;
 }
-
