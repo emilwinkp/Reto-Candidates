@@ -3,12 +3,12 @@
 #include <Arduino.h>
 
 Motores* Motores::instance = nullptr;
-GiroscopioMPU6050 mpu;
+GiroscopioMPU6050 gir;
 // Constructor de la clase
 Motores::Motores(uint8_t speed1, uint8_t in1_1, uint8_t in2_1,
                  uint8_t speed2, uint8_t in1_2, uint8_t in2_2)
   : motor1(speed1, in1_1, in2_1), motor2(speed2, in1_2, in2_2), 
-  kp(1.0), ki(0.0), kd(0.0), eprev1(0.0), eprev2(0.0), eintegral1(0.0), eintegral2(0.0), prevT(0),
+  kp(2.0), ki(1.0), kd(1.0), eprev1(0.0), eprev2(0.0), eintegral1(0.0), eintegral2(0.0), prevT(0),
   pos1(0), pos2(0), encoderPinA1(10), encoderPinB1(8), encoderPinA2(12), encoderPinB2(11){
   instance = this;
 }
@@ -133,7 +133,10 @@ void Motores::ControlWithPID(int target_position1, int target_position2) {
   }
   // Ajustar la velocidad de motor 1
   motor2.SetSpeed(power2);
-
+  Serial.print("Power 2");
+  Serial.print(power2);
+  Serial.print("Power 1");
+  Serial.print(power1);
 }
 
 void Motores::StopMotors(){
@@ -143,7 +146,7 @@ void Motores::StopMotors(){
 
 void Motores::InitializeDriver(){
   InitializeMotors();
-  Serial.begin(115200);
+  Serial.begin(9600);
   pinMode(pwm, OUTPUT);
 }
 
@@ -157,52 +160,28 @@ void Motores::MotoresMoveForward(){
   motor2.MoveForward();
 }
 
+void Motores::MoveMotorsImu(float targetAngle) {
+    float currentAngle = gir.readAnguloActual();
+    float error = targetAngle - currentAngle;
+    int baseSpeed = 200;
+    // Control PID para corregir el ángulo
+    float pTerm = kp * error;
+    eintegral1 += error * ki;
+    float dTerm = kd * (error - eprev1);
+    eprev1 = error;
+
+    // Ajuste de velocidad de los motores basándose en el control PID
+    int adjustment = static_cast<int>(pTerm + eintegral1 + dTerm);
+    int leftMotorSpeed = constrain(baseSpeed - adjustment, 0, 255);
+    int rightMotorSpeed = constrain(baseSpeed + adjustment, 0, 255);
+
+    SpeedMotores(leftMotorSpeed, rightMotorSpeed);
+    MotoresMoveForward();
+}
+
+
 void Motores::MotoresMoveBackwards(){
   motor1.MoveBackwards();
   motor2.MoveBackwards();
 }
  // Mover respecto a un angulo
-void Motores::MoveMotorsImu(float target_angle){
-  float angulo_inicial = mpu.readAnguloInicial();
-  float angulo_actual = angulo_inicial;
-  float error, dedt, control_signal;
-  float eintegral = 0;
-  float eprev = target_angle;
-  unsigned long startTime = millis();
-  
-  // Girar hasta alcanzar algulo deseado
-  while (fabs(angulo_actual - angulo_inicial)< fabs(target_angle)){ //checar como pausar en caso de no encontrar el angulo
-    angulo_actual = mpu.readAnguloActual(); 
-    error = target_angle - (angulo_actual - angulo_inicial);
-
-    eintegral += error*0.01;
-    dedt = (error - eprev)/0.01;
-    eprev = error;
-
-    control_signal = kp * error + ki * eintegral + kd * dedt;
-    float velocidad = fabs(control_signal);
-    if (velocidad > 255) velocidad = 255;
-  
-    if (target_angle> 0){
-    //Giro a la derecha
-      motor1.SetSpeed(velocidad);
-      motor1.MoveForward();
-      motor2.SetSpeed(velocidad);
-      motor2.MoveBackwards();
-    } else {
-      motor1.SetSpeed(velocidad);
-      motor1.MoveBackwards();
-      motor2.SetSpeed(velocidad);
-      motor2.MoveForward();
-    }
-
-    if (millis() - startTime > 3000) {
-      break;
-    }
-
-    delay(10);
-  }
-  
-  StopMotors();
-}
-

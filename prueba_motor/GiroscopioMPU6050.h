@@ -16,6 +16,8 @@ public:
 private:
   Adafruit_MPU6050 mpu;
   float angleOffset; 
+  float anguloActual;
+  float ultimaLectura;
 };
 
 #endif
