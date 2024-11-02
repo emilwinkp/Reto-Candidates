@@ -9,21 +9,13 @@ uint16_t sensorValues[SensorCount];
 const int rightMax = 255;
 const int leftMax = 255;
 const int baseSpeed = 150;
-const float Kp = 0.05;
-const float Kd = 2.0;
-/*
-#define Kp 0.05
-#define Kd 2 // experiment to determine this, slowly increase the speeds and adjust this value. ( Note: Kp < Kd) 
-#define rightMax 200 // max speed of the robot
-#define leftMax 200 // max speed of the robot
-#define rightBaseSpeed 150 // this is the speed at which the motors should spin when the robot is perfectly on the line
-#define leftBaseSpeed 150  // this is the speed at which the motors should spin when the robot is perfectly on the line
-#define NUM_SENSORS  6     // number of sensors used
-#define TIMEOUT       2500  // waits for 2500 us for sensor outputs to go low
-#define EMITTER_PIN   2     // emitter is controlled by digital pin 2
-*/
+const float Kp = 3.0;
+const float Kd = 0.2;
+int calibracion = 0;
+
 void setup() {
   mismotores.InitializeDriver();
+  mismotores.InitializeMotors();
   qtr.setTypeAnalog();
   qtr.setSensorPins((const uint8_t[]){A0, A1, A2, A3, A4, A5}, SensorCount);
   qtr.setEmitterPin(2);
@@ -34,6 +26,7 @@ void setup() {
 
   for (uint16_t i = 0; i < 400; i++) {
     qtr.calibrate();
+    Serial.print(calibracion);
   }
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.begin(9600);

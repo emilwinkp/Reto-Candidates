@@ -7,9 +7,19 @@ SensorQTR::SensorQTR(uint8_t* pins, uint8_t sensorCount) {
 
 // Inicialización del sensor
 void SensorQTR::InitializeQTR(uint8_t* pins, uint8_t sensorCount) {
-  qtr.setTypeAnalog(); 
-  qtr.setSamplesPerSensor(10);  // Cambia setSamplePeriod a setSamplesPerSensor
-  qtr.setSensorPins(pins, sensorCount);          // Configura el tipo de sensor
+  qtr.setTypeAnalog();
+  qtr.setSensorPins((const uint8_t[]){A0, A1, A2, A3, A4, A5}, sensorCount);
+  qtr.setEmitterPin(2);
+  
+  delay(500); // Segundos para poner el robot en el suelo
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);
+
+  for (uint16_t i = 0; i < 400; i++) {
+    qtr.calibrate();
+  }
+  digitalWrite(LED_BUILTIN, HIGH);
+  Serial.begin(9600);         // Configura el tipo de sensor
 }
 
 // Lectura de los valores de los sensores
