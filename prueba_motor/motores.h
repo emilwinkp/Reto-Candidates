@@ -21,14 +21,20 @@ public:
   void MotoresMoveForward();
   void MotoresMoveBackwards();
   // PID con encoder
+  void Mover30adelante();
+  void Mover30atras();
   void ControlWithPID(int target_position1, int target_position2);
   static void readEncoder();  // Función para leer el encoder
   void resetEncoder();
   static void readEncoderA1();
   static void readEncoderA2();
   // IMU para giros 
-  void MoveMotorsImu (float target_angle); //Checar comunicacion con esp32
+  void MoveMotorsImu(float target_angle); //Checar comunicacion con esp
+  int Pos1();
+  int Pos2();
   void SpeedMotores(uint8_t speed1, uint8_t speed2);
+  void GirarDer();
+  void GirarIzq();
   
 private:
   Motor motor1;
@@ -40,7 +46,7 @@ private:
   long prevT;        // Tiempo anterior
 
   // Variables de encoder
-  int pos1, pos2;          // Posición de los encoders
+  int pos1, pos2, power1, power2;          // Posición de los encoders
   static Motores* instance;
   uint8_t pwm; // Checar driver
 

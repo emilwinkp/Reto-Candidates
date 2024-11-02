@@ -1,5 +1,8 @@
 #include "QTRsensor.h"
 
+#define THRESHOLD_BLACK 800   // Ajusta según la sensibilidad del sensor
+#define THRESHOLD_RED 600
+#define THRESHOLD_GREEN 400
 // Constructor
 SensorQTR::SensorQTR(uint8_t* pins, uint8_t sensorCount) {
   InitializeQTR(pins, sensorCount); // No es necesario llamar a init en el constructor

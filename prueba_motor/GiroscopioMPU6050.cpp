@@ -35,11 +35,16 @@ float GiroscopioMPU6050::readAnguloActual() {
   unsigned long tiempoActual = millis();
   float deltaTiempo = (tiempoActual - ultimaLectura) / 1000.0;  // Convertir a segundos
   ultimaLectura = tiempoActual;
-  
+
+  // Suponiendo que el valor devuelto es en radianes, convertir a grados
+  float velocidadAngular = event.gyro.z * (180.0 / PI);  // Convertir a grados/segundo
+
   // Integrar la velocidad angular para obtener el ángulo acumulado
-  anguloActual += (event.gyro.z * deltaTiempo);  // Asumiendo que la velocidad angular está en grados/s
+  anguloActual += (velocidadAngular * deltaTiempo);
 
   // Restar el offset si es necesario
   return anguloActual - angleOffset;
-
 }
+
+
+
