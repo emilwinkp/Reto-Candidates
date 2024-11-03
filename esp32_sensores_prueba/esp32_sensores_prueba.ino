@@ -1,37 +1,38 @@
-#include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
+
 #include "ultrasonicos.h"
-#include "ultrasonico.h"
+#include <Arduino.h>
+#include "rgb.h"
 
-//Ultrasonicos ult(14,32,14,15,2,0,10,40,30);
-Ultrasonico ul(14,32);
-Ultrasonico ul2(14,15);
-Ultrasonico ul3(2,0);
+Ultrasonicos ult(33,32,14,15,13,0,10,45,30);
+ColorSensor rgb;
+TwoWire I2CBus = TwoWire(0); // Bus I2C 0 en el ESP32
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-int situacion = 0;
 
 void setup() {
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
   Serial.begin(115200);
-  Serial.print("Hola");
-  ul.InitializeUltra();
-  ul2.InitializeUltra();
-  ul3.InitializeUltra();
-  delay(5000);
-  // put your setup code here, to run once:
+  ult.InitializeUltras();
+  Serial.println("Iniciando prueba de sensor ultrasónico...");
+  rgb.begin();
+  lcd.setCursor(0, 0);
+  lcd.print("Iniciando...");
+  delay(2000);
+  
 
+  
 }
 
 void loop() {
-  /*
-  situacion = ult.evaluarSituacion(); // Asegúrate de asignar el valor retornado
-  Serial.print("Situación: ");
-  Serial.println(situacion);
+  
+  rgb.readColor();
+  color = getColorName();
   delay(1000);
-  */
-  //ult.evaluarSituacion();
-  ul.medirDistancia();
-  //ult.evaluarMuros();
-  delay(3000);
   
   
-}
 
+
+}

@@ -18,7 +18,7 @@ float Ultrasonico::medirDistancia() {
 
   long duration = pulseIn(echo_, HIGH);
   float distance = duration / 58.2;
-  Serial.print("Distancia: ");
-  Serial.println(distance);
+  //Serial.print("Distancia: ");
+  //Serial.println(distance);
   return distance;
 }

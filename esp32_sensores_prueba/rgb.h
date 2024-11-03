@@ -14,13 +14,13 @@ public:
     ColorSensor();
     bool begin();
     void readColor();
-    String getColorName() const;
+    void getColorName() const;
 
 private:
     Adafruit_TCS34725 tcs; 
     ColorConverter convertidor;
     uint16_t clear, red, green, blue;
-    double hue, saturation, value;
+    double hue, saturation, value, valor;
 
     void printColorName(double hue) const;
 };

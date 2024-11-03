@@ -14,20 +14,15 @@ uint8_t sensorPins[6] = {A0, A1, A2, A3, A4, A5};
 SensorQTR qtrSensor(sensorPins, 6);               
 
 void setup() {
-  Serial.begin(9600);
-  mismotores.InitializeMotors();
-  mismotores.InitializeDriver();
-  mismotores.MoveMotorsImu(90);
-  //qtrSensor.InitializeQTR(sensorPins, 6);
+
+  qtrSensor.InitializeQTR(sensorPins, 6);
   //for (uint16_t i = 0; i < 400; i++) {
     //qtr.calibrate();
 
    // Inicializar el giroscopio
 }
 void loop() {
-  mismotores.MotoresMoveForward();
-  delay(100);
-  mismotores.SpeedMotores(200, 200);
+
 }
   /*
   qtrSensor.readSensors();            // Lee los valores del sensor
